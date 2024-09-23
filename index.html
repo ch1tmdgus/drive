@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N4C드라이브</title>
+    <style>
+        /* 버튼 간 여백 추가 */
+        .file-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .file-item span {
+            margin-right: 20px;
+        }
+
+        .file-item button {
+            margin-left: 10px; /* 버튼 간 여백 */
+        }
+    </style>
+</head>
+<body>
+    <h1>노빠꾸 클라우드</h1>
+
+    <!-- 파일 선택을 위한 입력 -->
+    <input type="file" id="fileInput" />
+    <button onclick="uploadFile()">업로드</button>
+    <br><br>
+
+    <!-- 업로드된 파일 목록 표시 -->
+    <h2>업로드된 파일들</h2>
+    <button onclick="listFiles()">새로고침하기</button>
+    <ul id="fileList"></ul> <!-- 파일 목록을 표시할 영역 -->
+
+    <!-- Supabase CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+    <script>
+        // Supabase 클라이언트 설정
+        document.addEventListener('DOMContentLoaded', function () {
+            const supabaseUrl = 'https://znwsvdurindumxattjet.supabase.co'; // Supabase 프로젝트 URL
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3N2ZHVyaW5kdW14YXR0amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MDgwNzIsImV4cCI6MjA0MjI4NDA3Mn0.nF4-Y5XNO-rwuVmt9dq3BmOTzMkLtCcFUoD7EvjqK0Y'; // 제공된 API Key (anon)
+
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            const bucketName = 'drive'; // Supabase에서 만든 버킷 이름
+
+            // 파일 목록을 조회하고 표시하는 함수
+            window.listFiles = async function () {
+                try {
+                    console.log("Fetching file list from bucket:", bucketName); // 버킷 이름 출력
+
+                    const { data, error } = await supabase
+                        .storage
+                        .from(bucketName)
+                        .list('', { limit: 100 });
+
+                    if (error) {
+                        console.error('Error fetching file list:', error.message);
+                        alert('Error fetching file list: ' + error.message);
+                        return;
+                    }
+
+                    console.log('File list data:', data); // 데이터를 콘솔에 출력하여 확인
+                    const fileList = document.getElementById('fileList');
+                    fileList.innerHTML = ''; // 기존 목록을 비웁니다.
+
+                    data.forEach(file => {
+                        const li = document.createElement('li');
+                        li.classList.add('file-item');
+
+                        const fileName = document.createElement('span');
+                        fileName.innerText = file.name;
+                        li.appendChild(fileName);
+
+                        const downloadButton = document.createElement('button');
+                        downloadButton.innerText = '다운로드';
+                        downloadButton.onclick = function () {
+                            downloadFileDirect(file.name);  // 다운로드 함수 호출
+                        };
+                        li.appendChild(downloadButton);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.innerText = '삭제';
+                        deleteButton.onclick = function () {
+                            deleteFile(file.name);  // 삭제 함수 호출
+                        };
+                        li.appendChild(deleteButton);
+
+                        fileList.appendChild(li);
+                    });
+                } catch (e) {
+                    console.error('Unexpected error while fetching file list:', e);
+                    alert('Unexpected error occurred while fetching file list.');
+                }
+            };
+
+            // 파일 업로드 함수
+            window.uploadFile = async function () {
+                const file = document.getElementById('fileInput').files[0];
+                if (!file) {
+                    alert('Please select a file to upload.');
+                    return;
+                }
+
+                const sanitizedFileName = sanitizeFileName(file.name);
+
+                try {
+                    const { data, error } = await supabase
+                        .storage
+                        .from(bucketName)
+                        .upload(sanitizedFileName, file);
+
+                    if (error) {
+                        console.error('Error uploading file:', error.message);
+                        alert('Error uploading file: ' + error.message);
+                    } else {
+                        console.log('File uploaded successfully:', data);
+                        alert('File uploaded successfully!');
+                        listFiles();  // 업로드 후 파일 목록 갱신
+                    }
+                } catch (e) {
+                    console.error('Unexpected error during file upload:', e);
+                    alert('Unexpected error occurred during file upload.');
+                }
+            };
+
+            // 파일 클릭 시 바로 다운로드하는 함수
+            window.downloadFileDirect = async function (fileName) {
+                try {
+                    const { data, error } = await supabase
+                        .storage
+                        .from(bucketName)
+                        .download(fileName);
+
+                    if (error) {
+                        alert('Error downloading file: ' + error.message);
+                    } else {
+                        const url = window.URL.createObjectURL(data);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        alert('File downloaded successfully!');
+                    }
+                } catch (e) {
+                    console.error('Unexpected error during file download:', e);
+                    alert('Unexpected error occurred during file download.');
+                }
+            };
+
+            // 파일 삭제 함수
+            window.deleteFile = async function (fileName) {
+                const confirmation = confirm(`Are you sure you want to delete the file "${fileName}"?`);
+                if (!confirmation) {
+                    return;
+                }
+
+                try {
+                    const { error } = await supabase
+                        .storage
+                        .from(bucketName)
+                        .remove([fileName]);
+
+                    if (error) {
+                        alert('Error deleting file: ' + error.message);
+                    } else {
+                        alert('File deleted successfully!');
+                        listFiles();  // 삭제 후 파일 목록 갱신
+                    }
+                } catch (e) {
+                    console.error('Unexpected error during file deletion:', e);
+                    alert('Unexpected error occurred during file deletion.');
+                }
+            };
+
+            // 특수 문자를 안전하게 변환하는 함수
+            function sanitizeFileName(fileName) {
+                return fileName.replace(/[^a-zA-Z0-9._-]/g, '_'); // 특수 문자를 '_'로 변환
+            }
+
+            // 페이지 로드 시 파일 목록을 불러옵니다.
+            listFiles();
+        });
+    </script>
+</body>
+</html>
