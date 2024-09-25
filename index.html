@@ -57,8 +57,8 @@
                         .list('', { limit: 100 });
 
                     if (error) {
-                        console.error('Error fetching file list:', error.message);
-                        alert('Error fetching file list: ' + error.message);
+                        console.error('파일리스트를 불러오는데 실패함 ㅅㄱ:', error.message);
+                        alert('파일리스트를 불러오는데 실패함 ㅅㄱ: ' + error.message);
                         return;
                     }
 
@@ -91,8 +91,8 @@
                         fileList.appendChild(li);
                     });
                 } catch (e) {
-                    console.error('Unexpected error while fetching file list:', e);
-                    alert('Unexpected error occurred while fetching file list.');
+                    console.error('파일리스트를 불러오는데 실패함 ㅅㄱ:', e);
+                    alert('파일리스트를 불러오는데 실패함 ㅅㄱ.');
                 }
             };
 
@@ -100,7 +100,7 @@
             window.uploadFile = async function () {
                 const file = document.getElementById('fileInput').files[0];
                 if (!file) {
-                    alert('Please select a file to upload.');
+                    alert('시발련아 파일을 쳐 선택해.');
                     return;
                 }
 
@@ -144,7 +144,7 @@
                         document.body.appendChild(a);
                         a.click();
                         window.URL.revokeObjectURL(url);
-                        alert('File downloaded successfully!');
+                        alert('파일이 성공적으로 느그한테 저장되었습니다');
                     }
                 } catch (e) {
                     console.error('에러!!!!! 시발 에러!!!!:', e);
@@ -154,7 +154,7 @@
 
             // 파일 삭제 함수
             window.deleteFile = async function (fileName) {
-                const confirmation = confirm(`Are you sure you want to delete the file "${fileName}"?`);
+                const confirmation = confirm(`ㄹㅇ 진짜로 "${fileName}"을(를) 삭제할꺼임??`);
                 if (!confirmation) {
                     return;
                 }
@@ -166,13 +166,13 @@
                         .remove([fileName]);
 
                     if (error) {
-                        alert('Error deleting file: ' + error.message);
+                        alert('에러!!! ' + error.message);
                     } else {
-                        alert('File deleted successfully!');
+                        alert('파일이 성공적으로 제거되었습니다');
                         listFiles();  // 삭제 후 파일 목록 갱신
                     }
                 } catch (e) {
-                    console.error('에러!!!!! 시발 에러!!!!:', e);
+                    console.error('에러!!!', e);
                     alert('에러!!!!! 시발 에러!!!!');
                 }
             };
