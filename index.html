@@ -60,7 +60,7 @@
     <h1>노빠꾸 클라우드</h1>
 
     <!-- 드래그 앤 드롭 영역 -->
-    <div id="dropArea" onclick="document.getElementById('fileInput').click()">파일을 여기에 드래그 앤 드롭 하세요 또는 클릭하여 파일을 선택하세요</div>
+    <div id="dropArea">파일을 여기에 드래그 앤 드롭 하세요 또는 클릭하여 파일을 선택하세요</div>
 
     <!-- 파일 선택을 위한 입력 -->
     <input type="file" id="fileInput" style="display:none;" />
@@ -86,8 +86,8 @@
     <script>
         // Supabase 클라이언트 설정
         document.addEventListener('DOMContentLoaded', function () {
-            const supabaseUrl = 'https://znwsvdurindumxattjet.supabase.co'; // Supabase 프로젝트 URL
-            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3N2ZHVyaW5kdW14YXR0amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MDgwNzIsImV4cCI6MjA0MjI4NDA3Mn0.nF4-Y5XNO-rwuVmt9dq3BmOTzMkLtCcFUoD7EvjqK0Y'; // 제공된 API Key
+            const supabaseUrl = 'https://znwsvdurindumxattjet.supabase.co'; // Supabase 프로젝트 URL (확인 필요)
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3N2ZHVyaW5kdW14YXR0amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MDgwNzIsImV4cCI6MjA0MjI4NDA3Mn0.nF4-Y5XNO-rwuVmt9dq3BmOTzMkLtCcFUoD7EvjqK0Y'; // 제공된 API Key (확인 필요)
             const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             const bucketName = 'drive'; // Supabase에서 만든 버킷 이름
             const maxStorageMB = 1; // 최대 스토리지 용량 (MB)
@@ -98,6 +98,7 @@
 
             // 드래그 앤 드롭 영역 가져오기
             const dropArea = document.getElementById('dropArea');
+            const fileInput = document.getElementById('fileInput');
 
             // 드래그 앤 드롭 이벤트 리스너 추가
             dropArea.addEventListener('dragover', (e) => {
@@ -114,6 +115,15 @@
                 dropArea.classList.remove('dragover');
 
                 const files = e.dataTransfer.files;
+                if (files.length) {
+                    selectedFile = files[0];
+                    document.getElementById('selectedFileName').innerText = `선택된 파일: ${selectedFile.name}`; // 선택된 파일 이름 표시
+                }
+            });
+
+            // 파일 수동 선택 이벤트 리스너
+            fileInput.addEventListener('change', (e) => {
+                const files = e.target.files;
                 if (files.length) {
                     selectedFile = files[0];
                     document.getElementById('selectedFileName').innerText = `선택된 파일: ${selectedFile.name}`; // 선택된 파일 이름 표시
@@ -201,7 +211,11 @@
 
                     if (error) {
                         console.error('Error fetching file list:', error.message);
-                        alert('Error fetching file list: ' + error.message);
+                        if (error.message.includes('invalid signature')) {
+                            alert('Invalid signature. Please check your Supabase key or token.');
+                        } else {
+                            alert('Error fetching file list: ' + error.message);
+                        }
                         return;
                     }
 
