@@ -23,7 +23,7 @@
     }
 
     h2 {
-      color: #666;
+      color: white;
       margin-bottom: 10px;
     }
 
@@ -91,7 +91,7 @@
     #selectedFileName {
       margin-top: 10px;
       font-size: 1em;
-      color: #007bff;
+      color: white;
       font-weight: bold;
     }
 
@@ -105,19 +105,56 @@
     /* 파일 목록 새로고침 버튼과 폴더 생성 버튼 */
     #fileListButtons {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column; /* 모바일에서 세로 정렬 */
+      align-items: flex-start; /* 왼쪽 정렬 */
       margin-bottom: 10px;
     }
 
+    #fileListButtons div {
+      display: flex;
+      justify-content: space-between;
+      width: 100%; /* 버튼의 전체 너비 사용 */
+    }
+
     #fileListButtons button {
-      margin-right: 10px;
-      margin-left: 10px;
+      margin: 5px 0; /* 위아래 여백 추가 */
     }
 
     /* 업로드된 파일 목록 */
     #fileList {
       list-style: none;
       padding: 0;
+    }
+
+    /* 모바일 레이아웃 조정 */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8em; /* 제목 크기 조정 */
+      }
+
+      #dropArea {
+        padding: 20px; /* 패딩 감소 */
+        font-size: 1em; /* 폰트 크기 조정 */
+      }
+
+      button {
+        padding: 8px 16px; /* 버튼 크기 조정 */
+        font-size: 0.9em; /* 폰트 크기 조정 */
+      }
+
+      .file-item {
+        flex-direction: column; /* 파일 아이템 세로 정렬 */
+        align-items: flex-start; /* 왼쪽 정렬 */
+      }
+
+      .file-info {
+        width: 100%; /* 버튼의 전체 너비 사용 */
+        justify-content: space-between; /* 공간 분배 */
+      }
+
+      #storageUsage {
+        font-size: 1em; /* 폰트 크기 조정 */
+      }
     }
   </style>
 </head>
