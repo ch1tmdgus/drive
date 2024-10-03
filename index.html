@@ -1,389 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N4C 드라이브</title>
+    <style>
+      /* 전체 레이아웃 스타일 */
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #24292e;
+        margin: 0;
+        padding: 20px;
+        color: #fafbfc;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>N4C 드라이브</title>
-  <style>
-    /* 전체 레이아웃 스타일 */
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #24292e;
-      margin: 0;
-      padding: 20px;
-      color: #fafbfc;
-    }
-
-    h1 {
-      text-align: center;
-      color: #fafbfc;
-      font-size: 2.2em;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      color: white;
-      margin-bottom: 10px;
-    }
-
-    /* 버튼 및 파일 선택 스타일 */
-    button {
-      background-color: #fafbfc;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1em;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #fafbfc9f;
-    }
-
-    /* 파일 목록 아이템 스타일 */
-    .file-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #2b3137;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      transition: box-shadow 0.2s ease;
-    }
-
-    .file-item:hover {
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    /* 파일 정보와 버튼을 오른쪽에 고정 */
-    .file-info {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px; /* 버튼 사이 간격 */
-    }
-
-    /* 드래그 앤 드롭 스타일 */
-    #dropArea {
-      border: 2px dashed #fafbfc;
-      background-color: #2b3137;
-      padding: 40px;
-      text-align: center;
-      color: #fafbfc;
-      font-size: 1.1em;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      transition: border-color 0.3s ease, background-color 0.3s ease;
-    }
-
-    #dropArea.dragover {
-      border-color: #fafbfc;
-      background-color: #d2eaf9;
-      color: #fafbfc;
-    }
-
-    /* 선택된 파일 이름 */
-    #selectedFileName {
-      margin-top: 10px;
-      font-size: 1em;
-      color: white;
-      font-weight: bold;
-    }
-
-    /* 스토리지 사용량 */
-    #storageUsage {
-      margin-top: 20px;
-      font-size: 1.2em;
-      color: gray;
-    }
-
-    /* 파일 목록 새로고침 버튼과 폴더 생성 버튼 */
-    #fileListButtons {
-      display: flex;
-      flex-direction: column; /* 모바일에서 세로 정렬 */
-      align-items: flex-start; /* 왼쪽 정렬 */
-      margin-bottom: 10px;
-    }
-
-    #fileListButtons div {
-      display: flex;
-      justify-content: space-between;
-      width: 100%; /* 버튼의 전체 너비 사용 */
-    }
-
-    #fileListButtons button {
-      margin: 5px 0; /* 위아래 여백 추가 */
-    }
-
-    /* 업로드된 파일 목록 */
-    #fileList {
-      list-style: none;
-      padding: 0;
-    }
-
-    /* 모바일 레이아웃 조정 */
-    @media (max-width: 768px) {
       h1 {
-        font-size: 1.8em; /* 제목 크기 조정 */
+        text-align: center;
+        color: #fafbfc;
+        font-size: 2.2em;
+        margin-bottom: 20px;
       }
 
-      #dropArea {
-        padding: 20px; /* 패딩 감소 */
-        font-size: 1em; /* 폰트 크기 조정 */
+      h2 {
+        color: white;
+        margin-bottom: 10px;
+        display: inline-block;
       }
 
+      .refresh-icon {
+        float: right;
+        cursor: pointer;
+      }
+
+      /* 버튼 및 파일 선택 스타일 */
       button {
-        padding: 8px 16px; /* 버튼 크기 조정 */
-        font-size: 0.9em; /* 폰트 크기 조정 */
+        background-color: #fafbfc;
+        color: black;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1em;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
       }
 
+      button:hover {
+        background-color: #fafbfc9f;
+      }
+
+      /* 파일 목록 아이템 스타일 */
       .file-item {
-        flex-direction: column; /* 파일 아이템 세로 정렬 */
-        align-items: flex-start; /* 왼쪽 정렬 */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #2b3137;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.2s ease;
       }
 
+      .file-item:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      /* 파일 정보와 버튼을 오른쪽에 고정 */
       .file-info {
-        width: 100%; /* 버튼의 전체 너비 사용 */
-        justify-content: space-between; /* 공간 분배 */
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+        gap: 10px; /* 버튼 사이 간격 */
       }
 
+      /* 드래그 앤 드롭 스타일 */
+      #dropArea {
+        border: 2px dashed #fafbfc;
+        background-color: #2b3137;
+        padding: 40px;
+        text-align: center;
+        color: #fafbfc;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+      }
+
+      #dropArea.dragover {
+        border-color: #fafbfc;
+        background-color: #d2eaf9;
+        color: #fafbfc;
+      }
+
+      /* 선택된 파일 이름 */
+      #selectedFileName {
+        margin-top: 10px;
+        font-size: 1em;
+        color: white;
+        font-weight: bold;
+      }
+
+      /* 스토리지 사용량 */
       #storageUsage {
-        font-size: 1em; /* 폰트 크기 조정 */
+        margin-top: 20px;
+        font-size: 1.2em;
+        color: gray;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <h1>노빠꾸 클라우드</h1>
+      /* 파일 목록 새로고침 버튼 */
+      #fileListButtons {
+        display: flex;
+        flex-direction: column; /* 모바일에서 세로 정렬 */
+        align-items: flex-start; /* 왼쪽 정렬 */
+        margin-bottom: 10px;
+      }
 
-  <!-- 드래그 앤 드롭 영역 -->
-  <div id="dropArea">파일을 여기에 드래그 앤 드롭 하세요</div>
+      #fileListButtons div {
+        display: flex;
+        justify-content: space-between;
+        width: 100%; /* 버튼의 전체 너비 사용 */
+      }
 
-  <!-- 파일 선택 및 업로드 버튼 -->
-  <input type="file" id="fileInput" style="display:none;" />
-  <button id="selectFileButton">파일 선택하기</button>
-  <button onclick="uploadFile()">업로드</button>
+      .material-symbols-outlined {
+        color: white;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
 
-  <!-- 선택된 파일 이름 표시 -->
-  <div id="selectedFileName">선택된 파일: 없음</div>
+      .material-symbols-outlined:hover {
+        background-color: #49515a;
+        border-radius: 7px;
+        transition: 0.3s ease;
+      }
 
-  <br><br>
+      #fileList {
+        list-style: none;
+        padding: 0;
+      }
 
-  <!-- 업로드된 파일 목록 표시 -->
-  <div id="fileListButtons">
-    <h2>업로드된 파일들</h2>
-    <div>
-      <button onclick="listFiles()">새로고침하기</button>
-      <button onclick="createNewFolder()">새로운 폴더 생성</button> <!-- 폴더 생성 버튼 -->
+      /* 모바일 레이아웃 조정 */
+
+      /* 모바일 레이아웃 조정 */
+      @media (max-width: 700px) {
+        h1 {
+          font-size: 1.8em; /* 제목 크기 조정 */
+        }
+
+        #dropArea {
+          display: none;
+        }
+
+        button {
+          padding: 8px 16px; /* 버튼 크기 조정 */
+          font-size: 0.9em; /* 폰트 크기 조정 */
+        }
+
+        .file-item {
+          flex-direction: column; /* 파일 아이템 세로 정렬 */
+          align-items: flex-start; /* 왼쪽 정렬 */
+        }
+
+        .file-info {
+          width: 100%;
+          justify-content: flex-end; /* 모바일에서도 버튼을 오른쪽 정렬 */
+        }
+
+        #storageUsage {
+          font-size: 1em; /* 폰트 크기 조정 */
+        }
+      }
+    </style>
+
+    <!-- Google Fonts 아이콘 추가 -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
+
+  <body>
+    <h1>노빠꾸 클라우드</h1>
+
+    <!-- 드래그 앤 드롭 영역 -->
+    <div id="dropArea">파일을 여기에 드래그 앤 드롭 하세요</div>
+
+    <!-- 파일 선택 및 업로드 버튼 -->
+    <input type="file" id="fileInput" style="display: none" />
+    <button id="selectFileButton">파일 선택하기</button>
+    <button onclick="uploadFile()">업로드</button>
+
+    <!-- 선택된 파일 이름 표시 -->
+    <div id="selectedFileName">선택된 파일: 없음</div>
+
+    <br /><br />
+
+    <!-- 업로드된 파일 목록 표시 -->
+    <div id="fileListButtons">
+      <div style="display: flex; align-items: center">
+        <h2>업로드된 파일들</h2>
+        <span
+          class="material-symbols-outlined refresh-icon"
+          style="margin-left: 10px"
+          onclick="listFiles()"
+          >refresh</span
+        >
+      </div>
     </div>
-  </div>
 
-  <ul id="fileList"></ul>
+    <ul id="fileList"></ul>
 
-  <!-- 스토리지 사용량 표시 -->
-  <div id="storageUsage">사용된 스토리지: 0 MB / 1GB</div>
+    <!-- 스토리지 사용량 표시 -->
+    <div id="storageUsage">사용된 스토리지: 0 MB / 1GB</div>
 
-  <!-- Supabase CDN 추가 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <!-- Supabase CDN 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const supabaseUrl = 'https://znwsvdurindumxattjet.supabase.co';
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3N2ZHVyaW5kdW14YXR0amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MDgwNzIsImV4cCI6MjA0MjI4NDA3Mn0.nF4-Y5XNO-rwuVmt9dq3BmOTzMkLtCcFUoD7EvjqK0Y';
-      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-      const bucketName = 'drive';
-      const maxStorageMB = 1; // 최대 스토리지 용량 (GB)
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const supabaseUrl = "https://znwsvdurindumxattjet.supabase.co";
+        const supabaseKey =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpud3N2ZHVyaW5kdW14YXR0amV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY3MDgwNzIsImV4cCI6MjA0MjI4NDA3Mn0.nF4-Y5XNO-rwuVmt9dq3BmOTzMkLtCcFUoD7EvjqK0Y";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const bucketName = "drive";
+        const maxStorageMB = 1; // 최대 스토리지 용량 (GB)
 
-      let selectedFile = null;
-      let totalUsedStorage = 0;
+        let selectedFile = null;
+        let totalUsedStorage = 0;
 
-      const fileInput = document.getElementById('fileInput');
-      const dropArea = document.getElementById('dropArea');
-      const selectFileButton = document.getElementById('selectFileButton');
+        const fileInput = document.getElementById("fileInput");
+        const dropArea = document.getElementById("dropArea");
+        const selectFileButton = document.getElementById("selectFileButton");
 
-      selectFileButton.addEventListener('click', () => {
-        fileInput.click();
-      });
+        selectFileButton.addEventListener("click", () => {
+          fileInput.click();
+        });
 
-      fileInput.addEventListener('change', (e) => {
-        const files = e.target.files;
-        if (files.length) {
-          selectedFile = files[0];
-          document.getElementById('selectedFileName').innerText = `선택된 파일: ${selectedFile.name}`;
-        }
-      });
-
-      dropArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropArea.classList.add('dragover');
-      });
-
-      dropArea.addEventListener('dragleave', () => {
-        dropArea.classList.remove('dragover');
-      });
-
-      dropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropArea.classList.remove('dragover');
-
-        const files = e.dataTransfer.files;
-        if (files.length) {
-          selectedFile = files[0];
-          document.getElementById('selectedFileName').innerText = `선택된 파일: ${selectedFile.name}`;
-        }
-      });
-
-      function formatFileSize(size) {
-        if (size >= 1048576) {
-          return (size / 1048576).toFixed(2) + ' MB';
-        } else if (size >= 1024) {
-          return (size / 1024).toFixed(2) + ' KB';
-        } else {
-          return size + ' bytes';
-        }
-      }
-
-      function updateStorageUsage() {
-        const storageUsage = document.getElementById('storageUsage');
-        storageUsage.innerText = `사용된 스토리지: ${totalUsedStorage.toFixed(2)} MB / ${maxStorageMB} GB`;
-      }
-
-      window.listFiles = async function () {
-        try {
-          const { data, error } = await supabase
-            .storage
-            .from(bucketName)
-            .list('', { limit: 100 });
-
-          if (error) {
-            console.error('Error fetching file list:', error.message);
-            alert('Error fetching file list: ' + error.message);
-            return;
+        fileInput.addEventListener("change", (e) => {
+          const files = e.target.files;
+          if (files.length) {
+            selectedFile = files[0];
+            document.getElementById(
+              "selectedFileName"
+            ).innerText = `선택된 파일: ${selectedFile.name}`;
           }
+        });
 
-          const fileList = document.getElementById('fileList');
-          fileList.innerHTML = '';
-          totalUsedStorage = 0;
+        dropArea.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          dropArea.classList.add("dragover");
+        });
 
-          data.forEach(file => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('file-item');
+        dropArea.addEventListener("dragleave", () => {
+          dropArea.classList.remove("dragover");
+        });
 
-            const fileInfo = document.createElement('div');
-            fileInfo.classList.add('file-info');
+        dropArea.addEventListener("drop", (e) => {
+          e.preventDefault();
+          dropArea.classList.remove("dragover");
 
-            if (file.metadata && file.metadata.size !== undefined) {
-              const fileSizeFormatted = formatFileSize(file.metadata.size);
-              totalUsedStorage += file.metadata.size / 1048576;
-
-              fileInfo.innerHTML = `
-                                <span class="file-size">(${fileSizeFormatted})</span>
-                                <button onclick="downloadFileDirect('${file.name}')">다운로드</button>
-                                <button onclick="deleteFile('${file.name}')">삭제</button>`;
-            }
-
-            listItem.innerHTML = `
-                                <span>${file.name}</span>
-                            `;
-            listItem.appendChild(fileInfo);
-            fileList.appendChild(listItem);
-          });
-
-          updateStorageUsage();
-
-        } catch (error) {
-          console.error('Error listing files:', error.message);
-          alert('Error listing files: ' + error.message);
-        }
-      };
-
-      window.uploadFile = async function () {
-        if (!selectedFile) {
-          alert('파일을 선택해주세요.');
-          return;
-        }
-
-        try {
-          const filePath = `${selectedFile.name}`;
-          const { error } = await supabase
-            .storage
-            .from(bucketName)
-            .upload(filePath, selectedFile, {
-              cacheControl: '3600',
-              upsert: false
-            });
-
-          if (error) {
-            console.error('Error uploading file:', error.message);
-            alert('Error uploading file: ' + error.message);
-            return;
+          const files = e.dataTransfer.files;
+          if (files.length) {
+            selectedFile = files[0];
+            document.getElementById(
+              "selectedFileName"
+            ).innerText = `선택된 파일: ${selectedFile.name}`;
           }
+        });
 
-          alert('파일 업로드 성공!');
-          listFiles(); // 업로드 후 파일 목록 새로고침
-        } catch (error) {
-          console.error('Error uploading file:', error.message);
-          alert('Error uploading file: ' + error.message);
+        function formatFileSize(size) {
+          if (size >= 1048576) {
+            return (size / 1048576).toFixed(2) + " MB";
+          } else if (size >= 1024) {
+            return (size / 1024).toFixed(2) + " KB";
+          } else {
+            return size + " bytes";
+          }
         }
-      };
 
-      window.deleteFile = async function (fileName) {
-        if (confirm(`파일 ${fileName}을(를) 삭제하시겠습니까?`)) {
+        function updateStorageUsage() {
+          const storageUsage = document.getElementById("storageUsage");
+          storageUsage.innerText = `사용된 스토리지: ${totalUsedStorage.toFixed(
+            2
+          )} MB / ${maxStorageMB} GB`;
+        }
+
+        async function listFiles() {
           try {
-            const { error } = await supabase
-              .storage
+            const { data, error } = await supabase.storage
               .from(bucketName)
-              .remove([fileName]);
+              .list("", { limit: 100 });
 
             if (error) {
-              console.error('Error deleting file:', error.message);
-              alert('Error deleting file: ' + error.message);
+              console.error("Error fetching file list:", error.message);
+              alert("Error fetching file list: " + error.message);
               return;
             }
 
-            alert('파일 삭제 성공!');
-            listFiles(); // 삭제 후 파일 목록 새로고침
+            const fileList = document.getElementById("fileList");
+            fileList.innerHTML = "";
+            totalUsedStorage = 0;
+
+            data.forEach((file) => {
+              const listItem = document.createElement("li");
+              listItem.classList.add("file-item");
+
+              const fileInfo = document.createElement("div");
+              fileInfo.classList.add("file-info");
+
+              if (file.metadata && file.metadata.size !== undefined) {
+                const fileSizeFormatted = formatFileSize(file.metadata.size);
+                totalUsedStorage += file.metadata.size / 1048576;
+
+                fileInfo.innerHTML = `
+                  <span class="file-size">(${fileSizeFormatted})</span>
+                  <span class="material-symbols-outlined" onclick="downloadFileDirect('${file.name}')">download</span>
+                  <span class="material-symbols-outlined" onclick="deleteFile('${file.name}')">delete</span>
+                  <span class="material-symbols-outlined" onclick="renameFile('${file.name}')">edit</span>`;
+              }
+
+              listItem.innerHTML = `
+                <span>${file.name}</span>
+              `;
+              listItem.appendChild(fileInfo);
+              fileList.appendChild(listItem);
+            });
+
+            updateStorageUsage();
           } catch (error) {
-            console.error('Error deleting file:', error.message);
-            alert('Error deleting file: ' + error.message);
+            console.error("Error listing files:", error.message);
+            alert("Error listing files: " + error.message);
           }
         }
-      };
 
-      window.downloadFileDirect = async function (fileName) {
-        try {
-          const { data, error } = await supabase
-            .storage
-            .from(bucketName)
-            .download(fileName);
+        window.listFiles = listFiles;
 
-          if (error) {
-            console.error('Error downloading file:', error.message);
-            alert('Error downloading file: ' + error.message);
+        window.uploadFile = async function () {
+          if (!selectedFile) {
+            alert("파일을 선택해주세요.");
             return;
           }
 
-          const url = URL.createObjectURL(data);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        } catch (error) {
-          console.error('Error downloading file:', error.message);
-          alert('Error downloading file: ' + error.message);
-        }
-      };
-    });
-  </script>
-</body>
+          try {
+            const filePath = `${selectedFile.name}`;
+            const { error } = await supabase.storage
+              .from(bucketName)
+              .upload(filePath, selectedFile, {
+                cacheControl: "3600",
+                upsert: false,
+              });
 
+            if (error) {
+              console.error("Error uploading file:", error.message);
+              alert("Error uploading file: " + error.message);
+              return;
+            }
+
+            alert("파일 업로드 성공!");
+            listFiles(); // 업로드 후 파일 목록 새로고침
+          } catch (error) {
+            console.error("Error uploading file:", error.message);
+            alert("Error uploading file: " + error.message);
+          }
+        };
+
+        window.deleteFile = async function (fileName) {
+          if (confirm(`파일 ${fileName}을(를) 삭제하시겠습니까?`)) {
+            try {
+              const { error } = await supabase.storage
+                .from(bucketName)
+                .remove([fileName]);
+
+              if (error) {
+                console.error("Error deleting file:", error.message);
+                alert("Error deleting file: " + error.message);
+                return;
+              }
+
+              alert("파일 삭제 성공!");
+              listFiles(); // 삭제 후 파일 목록 새로고침
+            } catch (error) {
+              console.error("Error deleting file:", error.message);
+              alert("Error deleting file: " + error.message);
+            }
+          }
+        };
+
+        window.renameFile = function (fileName) {
+          const newName = prompt("새로운 파일 이름을 입력하세요:", fileName);
+          if (!newName) return;
+
+          supabase.storage
+            .from(bucketName)
+            .move(fileName, newName)
+            .then(({ error }) => {
+              if (error) {
+                console.error("Error renaming file:", error.message);
+                alert("파일 이름 변경 실패: " + error.message);
+              } else {
+                alert("파일 이름 변경 성공!");
+                listFiles(); // 이름 변경 후 파일 목록 새로고침
+              }
+            });
+        };
+
+        window.downloadFileDirect = async function (fileName) {
+          try {
+            const { data, error } = await supabase.storage
+              .from(bucketName)
+              .download(fileName);
+
+            if (error) {
+              console.error("Error downloading file:", error.message);
+              alert("Error downloading file: " + error.message);
+              return;
+            }
+
+            const url = URL.createObjectURL(data);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error("Error downloading file:", error.message);
+            alert("Error downloading file: " + error.message);
+          }
+        };
+
+        // 페이지 로드 시 자동으로 파일 목록 새로고침
+        listFiles();
+      });
+    </script>
+  </body>
 </html>
