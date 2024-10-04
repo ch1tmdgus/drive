@@ -1,0 +1,197 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+/* 전체 레이아웃 스타일 */
+body {
+  font-family: "Pretendard";
+  background-color: #24292e;
+  margin: 0;
+  padding: 20px;
+  color: #fafbfc;
+}
+
+h1 {
+  text-align: center;
+  color: #fafbfc;
+  font-size: 2.2em;
+  margin-bottom: 20px;
+}
+
+h2 {
+  color: white;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.refresh-icon {
+  float: right;
+  cursor: pointer;
+}
+/* Upload date style */
+.file-time {
+  color: #59636d;
+  font-size: 0.9em;
+  margin-right: 10px;
+}
+
+/* 버튼 및 파일 선택 스타일 */
+button {
+  background-color: #fafbfc;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #fafbfc9f;
+}
+
+/* 파일 목록 아이템 스타일 */
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2b3137;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.file-item:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 파일 정보와 버튼을 오른쪽에 고정 */
+.file-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+  gap: 10px; /* 버튼 사이 간격 */
+}
+
+/* 드래그 앤 드롭 스타일 */
+#dropArea {
+  border: 2px dashed #fafbfc;
+  background-color: #2b3137;
+  padding: 40px;
+  text-align: center;
+  color: #fafbfc;
+  font-size: 1.1em;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#dropArea.dragover {
+  border-color: #fafbfc;
+  background-color: #d2eaf9;
+  color: #fafbfc;
+}
+
+/* 선택된 파일 이름 */
+#selectedFileName {
+  margin-top: 10px;
+  font-size: 1em;
+  color: white;
+  font-weight: bold;
+}
+
+/* 스토리지 사용량 */
+#storageUsage {
+  margin-top: 20px;
+  font-size: 1.2em;
+  color: gray;
+}
+
+/* 파일 목록 새로고침 버튼 */
+#fileListButtons {
+  display: flex;
+  flex-direction: column; /* 모바일에서 세로 정렬 */
+  align-items: flex-start; /* 왼쪽 정렬 */
+  margin-bottom: 10px;
+}
+
+#fileListButtons div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* 버튼의 전체 너비 사용 */
+}
+
+.material-symbols-outlined {
+  color: white;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.material-symbols-outlined:hover {
+  background-color: #49515a;
+  border-radius: 7px;
+  transition: 0.3s ease;
+}
+
+#fileList {
+  list-style: none;
+  padding: 0;
+}
+
+/* 커스텀 컨텍스트 메뉴 스타일 */
+#contextMenu {
+  position: absolute;
+  display: none;
+  background-color: #2b3137;
+  border: 1px solid #fafbfc;
+  border-radius: 8px;
+  z-index: 1000;
+}
+
+#contextMenu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 0;
+}
+
+#contextMenu li {
+  padding: 8px 16px;
+  color: #fafbfc;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#contextMenu li:hover {
+  background-color: #49515a;
+}
+
+/* 모바일 레이아웃 조정 */
+@media (max-width: 700px) {
+  h1 {
+    font-size: 1.8em; /* 제목 크기 조정 */
+  }
+
+  #dropArea {
+    display: none;
+  }
+
+  button {
+    padding: 8px 16px; /* 버튼 크기 조정 */
+    font-size: 0.9em; /* 폰트 크기 조정 */
+  }
+
+  .file-item {
+    flex-direction: column; /* 파일 아이템 세로 정렬 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+  }
+
+  .file-info {
+    width: 100%;
+    justify-content: flex-end; /* 모바일에서도 버튼을 오른쪽 정렬 */
+  }
+
+  #storageUsage {
+    font-size: 1em; /* 폰트 크기 조정 */
+  }
+}
