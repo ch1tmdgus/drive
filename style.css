@@ -166,6 +166,8 @@ button:hover {
   background-color: #49515a;
 }
 
+
+
 /* 모바일 레이아웃 조정 */
 @media (max-width: 700px) {
   h1 {
