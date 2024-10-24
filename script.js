@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedFileNameForContext = null;
 
   const fileInput = document.getElementById("fileInput");
-  const dropArea = document.getElementById("dropArea");
   const fileList = document.getElementById("fileList");
 
   // 파일 선택
@@ -25,19 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  dropArea.addEventListener("dragover", (e) => {
+  // 브라우저 전체에서 드래그 앤 드롭으로 파일 처리
+  document.addEventListener("dragover", (e) => {
     e.preventDefault();
-    dropArea.classList.add("dragover");
   });
 
-  dropArea.addEventListener("dragleave", () => {
-    dropArea.classList.remove("dragover");
-  });
-
-  dropArea.addEventListener("drop", (e) => {
+  document.addEventListener("drop", (e) => {
     e.preventDefault();
-    dropArea.classList.remove("dragover");
-
     const files = e.dataTransfer.files;
     if (files.length) {
       selectedFile = files[0];
@@ -72,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const fileSizeFormatted = formatFileSize(file.metadata.size);
           totalUsedStorage += file.metadata.size / 1048576;
 
-          // Format the upload date without seconds and apply styles
           const uploadDate = new Date(file.created_at).toLocaleDateString("ko-KR", {
             year: "numeric",
             month: "short",
@@ -91,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         listItem.innerHTML = `<span>${file.name}</span>`;
         listItem.appendChild(fileInfo);
-        
+
         // 우클릭 이벤트 추가
         listItem.addEventListener("contextmenu", (event) => {
           event.preventDefault();
