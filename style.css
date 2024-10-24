@@ -7,6 +7,7 @@ body {
   margin: 0;
   padding: 20px;
   color: #fafbfc;
+  text-align: center; /* 전체 텍스트 중앙 정렬 */
 }
 
 h1 {
@@ -20,12 +21,16 @@ h2 {
   color: white;
   margin-bottom: 10px;
   display: inline-block;
+  margin: 0; /* 새로고침 아이콘과 높이를 맞추기 위해 여백을 제거 */
 }
 
 .refresh-icon {
-  float: right;
   cursor: pointer;
+  margin-left: 10px;
+  vertical-align: middle; /* 새로고침 아이콘을 텍스트와 수직으로 정렬 */
+  font-size: 1.5em; /* 아이콘 크기 조절 */
 }
+
 /* Upload date style */
 .file-time {
   color: #59636d;
@@ -43,6 +48,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin: 10px 0; /* 버튼 사이에 간격 추가 */
 }
 
 button:hover {
@@ -74,25 +80,6 @@ button:hover {
   gap: 10px; /* 버튼 사이 간격 */
 }
 
-/* 드래그 앤 드롭 스타일 */
-#dropArea {
-  border: 2px dashed #fafbfc;
-  background-color: #2b3137;
-  padding: 40px;
-  text-align: center;
-  color: #fafbfc;
-  font-size: 1.1em;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-#dropArea.dragover {
-  border-color: #fafbfc;
-  background-color: #d2eaf9;
-  color: #fafbfc;
-}
-
 /* 선택된 파일 이름 */
 #selectedFileName {
   margin-top: 10px;
@@ -111,15 +98,9 @@ button:hover {
 /* 파일 목록 새로고침 버튼 */
 #fileListButtons {
   display: flex;
-  flex-direction: column; /* 모바일에서 세로 정렬 */
-  align-items: flex-start; /* 왼쪽 정렬 */
+  align-items: center; /* 새로고침 버튼과 제목 높이를 맞춤 */
+  justify-content: center;
   margin-bottom: 10px;
-}
-
-#fileListButtons div {
-  display: flex;
-  justify-content: space-between;
-  width: 100%; /* 버튼의 전체 너비 사용 */
 }
 
 .material-symbols-outlined {
@@ -134,9 +115,11 @@ button:hover {
   transition: 0.3s ease;
 }
 
+/* 파일 목록 가운데 정렬 */
 #fileList {
   list-style: none;
   padding: 0;
+  text-align: center; /* 파일 목록을 중앙 정렬 */
 }
 
 /* 커스텀 컨텍스트 메뉴 스타일 */
@@ -166,16 +149,10 @@ button:hover {
   background-color: #49515a;
 }
 
-
-
 /* 모바일 레이아웃 조정 */
 @media (max-width: 700px) {
   h1 {
     font-size: 1.8em; /* 제목 크기 조정 */
-  }
-
-  #dropArea {
-    display: none;
   }
 
   button {
